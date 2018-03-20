@@ -1,0 +1,62 @@
+// Frederick Jacques Joubert
+// 2018-3-19
+// Cosc 425 A16
+//
+// File: 05Prob1228.pepcpu
+// Computer Systems, Fifth Edition
+// Problem 12.28
+// Fetch the operand specifier and increment PC by 2
+
+UnitPre: IR=0x000000, PC=0x01FF, Mem[0x01FF]=0xABCD, S=0
+UnitPost: IR=0x00ABCD, PC=0x0201
+
+//// Optimized:
+
+//IR <- Mem[0x01FF]
+//MAR <- PC && PC <- PC plus 1, high-order byte first.
+1. A=6, B=7; MARCk // MARA <- PC high-order, MARB <- PC low-order
+2. MemRead, A=7, B=23, AMux=1, ALU=1, CMux=1, C=7; SCk, LoadCk
+3. MemRead, A=6, B=22, AMux=1, CSMux=1, ALU=2, CMux=1, C=6; LoadCk
+4. MemRead, MDRMux=0; MDRCk
+
+//IR <- MDR
+5. AMux=0, ALU=0, CMux=1, C=9; LoadCk
+
+//MAR <- PC && PC <- PC plus 1, low-order byte second.
+6. A=6, B=7; MARCk // MARA <- PC high-order, MARB <- PC low-order
+7. MemRead, A=7, B=23, AMux=1, ALU=1, CMux=1, C=7; SCk, LoadCk
+8. MemRead, A=6, B=22, AMux=1, CSMux=1, ALU=2, CMux=1, C=6; LoadCk
+9. MemRead, MDRMux=0; MDRCk
+
+//IR <- MDR 
+10. AMux=0, ALU=0, CMux=1, C=10; LoadCk
+
+//// Unoptimized:
+
+//IR <- Mem[0x01FF]
+//MAR <- PC
+//A=6, B=7; MARCk // MARA <- PC high-order, MARB <- PC low-order
+//MemRead
+//MemRead
+//MemRead, MDRMux=0; MDRCk
+
+//IR <- MDR
+//AMux=0, ALU=0, CMux=1, C=9; LoadCk
+
+//PC <- PC plus 1, high-order byte first.
+//A=7, B=23, AMux=1, ALU=1, CMux=1, C=7; SCk, LoadCk
+//A=6, B=22, AMux=1, CSMux=1, ALU=2, CMux=1, C=6; LoadCk
+
+//MAR <- PC
+//A=6, B=7; MARCk // MARA <- PC high-order, MARB <- PC low-order
+//MemRead
+//MemRead
+//MemRead, MDRMux=0; MDRCk
+
+//IR <- MDR 
+//AMux=0, ALU=0, CMux=1, C=10; LoadCk
+
+//PC <- PC plus 1, low-order byte second.
+//A=7, B=23, AMux=1, ALU=1, CMux=1, C=7; SCk, LoadCk
+//A=6, B=22, AMux=1, CSMux=1, ALU=2, CMux=1, C=6; LoadCk
+
