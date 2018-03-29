@@ -1,0 +1,35 @@
+// Frederick Jacques Joubert
+// 2018-3-29
+// Cosc 425 A18
+
+// File: 05Prob1229e.pepcpu
+// Computer Systems, Fifth Edition
+// Problem 12.29(e)
+// NEGA
+// RTL: A <- -A; N <- A<0, Z <- A=0, V <- {overflow}
+
+UnitPre: IR=0x080000, A=0xFFFF
+UnitPre: N=1, Z=1, V=1, C=1
+UnitPost: A=0x0001, N=0, Z=0, V=0, C=1
+
+// UnitPre: IR=0x080000, A=0xFF00
+// UnitPre: N=1, Z=1, V=1, C=0
+// UnitPost: A=0x0100, N=0, Z=0, V=0, C=0
+
+// UnitPre: IR=0x080000, A=0x8000
+// UnitPre: N=0, Z=1, V=0, C=0
+// UnitPost: A=0x8000, N=1, Z=0, V=1, C=0
+
+// UnitPre: IR=0x080000, A=0x0000
+// UnitPre: N=1, Z=0, V=1, C=0
+// UnitPost: A=0x0000, N=0, Z=1, V=0, C=0
+
+// A<1> <- -A<1>, A<0> <- -A<0> 
+1. A=1, AMux=1, ALU=10, CMux=1, C=1; LoadCk
+2. A=0, AMux=1, ALU=10, CMux=1, C=0; LoadCk
+
+// A<0> plus 1, A<1> plus SC, Set NZVC
+3. A=1, AMux=1, B=23, ALU=1, CMux=1, C=1, AndZ=0; ZCk, SCk, LoadCk
+4. A=0, AMux=1, B=22, ALU=2, CSMux=1, CMux=1, C=0, AndZ=1; NCk, ZCk, VCK, LoadCk
+
+

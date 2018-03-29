@@ -1,0 +1,23 @@
+// Frederick Jacques Joubert
+// 2018-3-29
+// Cosc 425 A18
+
+// File: 05Prob1230.pepcpu
+// Computer Systems, Fifth Edition
+// Problem 12.30
+// ASLA
+// RTL: C <- A<0>, A<0..14> <- A<1..15>, A<15> <- 0; N <- A<0, Z <- A=0, V <- {overflow}
+
+UnitPre: IR=0x0A0000, A=0xFF01, N=1, Z=1, V=1, C=0, S=1
+UnitPost: A=0xFE02, N=1, Z=0, V=0, C=1
+
+// UnitPre: IR=0x0A0000, A=0x7F81, N=0, Z=1, V=0, C=1, S=0
+// UnitPost: A=0xFF02, N=1, Z=0, V=1, C=0
+
+// UnitPre: IR=0x0A0000, A=0x0000, N=1, Z=1, V=0, C=1, S=1
+// UnitPost: A=0x0000, N=0, Z=1, V=0, C=0
+
+// ASL Low, ROL High & Set V
+1. A=1, AMux=1, ALU=11, CMux=1, C=1, AndZ=0; SCk, ZCk, LoadCk
+2. A=0, AMux=1, ALU=12, CSMux=1, CMux=1, C=0, AndZ=1; NCk, ZCk, VCk, CCk, LoadCk
+
