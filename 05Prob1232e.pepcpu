@@ -1,0 +1,71 @@
+// Frederick Jacques Joubert
+// 2018-4-2
+// Cosc 425 A19
+
+// File: 05Prob1232e.pepcpu
+// Computer Systems, Fifth Edition
+// Problem 12.32(e)
+// LDWA here,sx
+// RTL: A <- Oprnd; N <- A<0, Z <- A=0
+// Stack-indexed addressing: Oprnd = Mem[SP + OprndSpec + X]
+
+UnitPre: IR=0xC600F0, SP=0xFAFE, X=0x0010, Mem[0xFBFE]=0x26D1
+UnitPre: N=1, Z=1, V=0, C=1, S=0
+UnitPost: A=0x26D1, N=0, Z=0, V=0, C=1
+
+// UnitPre: IR=0xC600F0, SP=0xFAFE, X=0x0010, Mem[0xFBFE]=0xD126
+// UnitPre: N=0, Z=1, V=0, C=1, S=0
+// UnitPost: A=0xD126, N=1, Z=0, V=0, C=1
+
+// UnitPre: IR=0xC600F0, SP=0xFAFE, X=0x0010, Mem[0xFBFE]=0x0000, A=0xFFFF
+// UnitPre: N=1, Z=0, V=0, C=1, S=0
+// UnitPost: A=0x0000, N=0, Z=1, V=0, C=1
+
+//// Optimized
+// 12,13 <- SP + OprndSpec
+1. A=5, B=10, AMux=1, ALU=1, CMux=1, C=13; SCk, LoadCk
+2. A=4, B=9, AMux=1, ALU=2, CSMux=1, CMux=1, C=12; LoadCk
+
+// 12,13 <- 12,13 + X
+3. A=13, B=3, AMux=1, ALU=1, CMux=1, C=13; SCk, LoadCk
+4. A=12, B=2, AMux=1, ALU=2, CSMux=1, CMux=1, C=12; LoadCk
+
+// MARA,MARB <- 12,13, 12,13 <- 12,13 + 1
+5. A=12, B=13; MARCk
+6. MemRead, A=13, B=23, AMux=1, ALU=1, CMux=1, C=13; SCk, LoadCk
+7. MemRead, A=12, B=22, AMux=1, ALU=2, CSMux=1, CMux=1, C=12; LoadCk
+8. MemRead, MDRMux=0; MDRCk
+9. A=12, B=13, AMux=0, ALU=0, CMux=1, C=0, AndZ=0; MARCk, NCk, ZCk, LoadCk
+
+10. MemRead
+11. MemRead
+12. MemRead, MDRMux=0; MDRCk
+13. AMux=0, ALU=0, CMux=1, C=1, AndZ=1; ZCk, LoadCk
+
+//// Unoptimized
+// 12,13 <- SP + OprndSpec
+//A=5, B=10, AMux=1, ALU=1, CMux=1, C=13; SCk, LoadCk
+//A=4, B=9, AMux=1, ALU=2, CSMux=1, CMux=1, C=12; LoadCk
+
+// 12,13 <- 12,13 + X
+//A=13, B=3, AMux=1, ALU=1, CMux=1, C=13; SCk, LoadCk
+//A=12, B=2, AMux=1, ALU=2, CSMux=1, CMux=1, C=12; LoadCk
+
+// MARA,MARB <- 12,13
+//A=12, B=13; MARCk
+//MemRead
+//MemRead
+//MemRead, MDRMux=0; MDRCk
+//AMux=0, ALU=0, CMux=1, C=0, AndZ=0; NCk, ZCk, LoadCk
+
+// 12,13 <- 12,13 + 1
+//A=13, B=23, AMux=1, ALU=1, CMux=1, C=13; SCk, LoadCk
+//A=12, B=22, AMux=1, ALU=2, CSMux=1, CMux=1, C=12; LoadCk
+
+// MARA,MARB <- 12,13
+//A=12, B=13; MARCk
+//MemRead
+//MemRead
+//MemRead, MDRMux=0; MDRCk
+//AMux=0, ALU=0, CMux=1, C=1, AndZ=1; ZCk, LoadCk
+
